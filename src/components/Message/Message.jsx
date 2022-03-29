@@ -1,9 +1,11 @@
+import React from 'react';
 import './Message.scss';
 
-export const Message = ({ name, message }) => {
+export default function Message({ author, text }) {
     return (
-        <h3 className=''>
-            {message}, {name}
-        </h3>
+        <div className='message'>
+            <span>{author}:</span>
+            <span>{text}</span>
+        </div>
     )
 };
