@@ -1,7 +1,10 @@
 .message {
-    margin: 20px;
-    padding: 2px 10px;
-    font-size: 16px;
-    text-align: left;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
+span {
+    margin-right: 10px;
+    font-weight: bold;
+    }
 }
