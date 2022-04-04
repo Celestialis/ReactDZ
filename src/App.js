@@ -1,31 +1,59 @@
 import './App.scss';
-import React, { useState, useEffect } from 'react';
-import Message from './components/Message/Message';
-import Form from './components/Form/Form';
-
+import React, {useEffect, useState} from "react";
+import {Form} from './components/Form/Form';
+import {AUTHORS} from "./utils/constants";
+import {MessageList} from "./components/MessageList/MessageList";
+import {ChatList} from "./components/ChatList/ChatList";
 
 function App() {
-  const [messages, setMessages] = useState([]);
+    const chat = [{
+        name: '1 chat',
+            },
+        {
+            name: '2 chat',
+        },
+    ]
+    const [messages, setMessages] = useState([]);
 
-  const addMessage = (message) => {
-    setMessages([...messages, message]);
-  };
-
-  useEffect( () => {
-    if (messages.length && messages[messages.length-1].author === 'name'){
-      addMessage({author: 'robot', text: 'robot watching'});
+    const addMessage = (newMsg) => {
+        setMessages([...messages, newMsg]);
     }
-  }, [messages]);
 
-  return (
-    <div className="App">
-      {messages.map((msg, index) => (
-        <Message key={'message' + index} author={msg.author} text={msg.text} />
-      ))}
+    const sendMessage = (text) => {
+        addMessage({
+            author: AUTHORS.human,
+            text,
+            id: `msg-${Date.now()}`,
+        });
+    };
 
-      <Form onSubmit={addMessage} />
-    </div>
-  );
+    useEffect(() => {
+        let timeout;
+        if (messages[messages.length - 1]?.author === AUTHORS.human) {
+            timeout = setTimeout(() => {
+                addMessage({
+                    author: AUTHORS.robot,
+                    text: 'hello',
+                    id: `msg-${Date.now()}`,
+                });
+            }, 1000);
+        }
+        return () => {
+            clearTimeout(timeout);
+        }
+    }, [messages]);
+
+    return (
+        <div className="App">
+            <div className="leftBar">
+                <ChatList chat={chat}/>
+            </div>
+            <div className="main">
+                <MessageList messages={messages}/>
+                <Form onSubmit={sendMessage}/>
+            </div>
+        </div>
+    );
 }
 
 export default App;
