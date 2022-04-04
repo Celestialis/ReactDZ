@@ -1,11 +1,22 @@
 import React from 'react';
 import './Message.scss';
+import PropTypes from 'prop-types';
 
-export default function Message({ author, text }) {
+export const Message = ({name, text}) => {
     return (
-        <div className='message'>
-            <span>{author}:</span>
-            <span>{text}</span>
+
+        <div className="message-container">
+            <h3 className="message">
+                <div> {name}</div>
+                <div>Message:</div>
+                <div>{text}</div>
+            </h3>
         </div>
-    )
-};
+
+    );
+}
+
+Message.propTypes = {
+    author: PropTypes.string,
+    text: PropTypes.string,
+}
