@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 export const Message = ({name, text}) => {
     return (
 
-        <div className="conversation-container">
+        <div className="message-container">
             <h3 className="message">
                 <div> {name}</div>
                 <div>Message:</div>
