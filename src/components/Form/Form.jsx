@@ -18,7 +18,6 @@ export const Form =({ onSubmit }) => {
     }
 
     useEffect(() => {
-        console.log("did mount", inputRef);
         inputRef.current?.focus();
     }, []);
 

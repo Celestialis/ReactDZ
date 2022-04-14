@@ -1,29 +1,28 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect} from "react";
 import {AUTHORS} from "../../utils/constants";
-import {MessageList} from "../../components/MessageList/MessageList";
-import {Form} from "../../components/Form/Form";
+import {MessageList} from "../MessageList/MessageList";
+import {Form} from "../Form/Form";
 import {useParams, Navigate} from "react-router-dom";
+import {selectMessages} from "../../store/messages/selector";
+import {useDispatch, useSelector} from "react-redux";
+import {addMessage} from "../../store/messages/actions";
 
-const initMessages = {
-    chat1:[],
-    chat2:[],
-    chat3:[],
-}
 export function Chat() {
+
     const {id} = useParams();
-    const params = useParams();
-    const [messages, setMessages] = useState(initMessages);
+    const messages = useSelector(selectMessages);
+    const dispatch = useDispatch();
 
-    const addMessage = (newMessag) => {
-        setMessages({...messages, [id]:[...messages[id],newMessag]});
-    }
-
-    const sendMessages = (text) => {
-        addMessage({
-            author: AUTHORS.human,
-            text,
-            id: `msg-${Date.now()}`,
-        });
+    const sendMessage = (text) => {
+        dispatch(
+            addMessage({
+                    author: AUTHORS.human,
+                    text,
+                    id: `msg-${Date.now()}`,
+                },
+                id
+            )
+        );
     };
 
     useEffect(() => {
@@ -31,11 +30,14 @@ export function Chat() {
         const lastMessage = messages[id]?.[messages[id]?.length - 1];
         if (lastMessage?.author === AUTHORS.human) {
             timeout = setTimeout(() => {
+               dispatch(
                 addMessage({
-                    author: AUTHORS.robot,
-                    text: 'hello',
-                    id: `msg-${Date.now()}`,
-                });
+                        author: AUTHORS.robot,
+                        text: 'hello',
+                        id: `msg-${Date.now()}`,
+                    },
+                    id
+                ));
             }, 1000);
         }
         return () => {
@@ -43,13 +45,13 @@ export function Chat() {
         }
     }, [messages]);
     if (!messages[id]) {
-        return <Navigate to="/chat" replace />
+        return <Navigate to="/chat" replace/>
     }
 
     return (
         <div className="main">
             <MessageList messages={messages[id]}/>
-            <Form onSubmit={sendMessages}/>
+            <Form onSubmit={sendMessage}/>
         </div>
     );
 }

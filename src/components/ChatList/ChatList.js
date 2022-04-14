@@ -1,30 +1,49 @@
 import React from "react";
 import {Link, Outlet} from "react-router-dom";
 import './ChatList.scss';
+import {Form} from "../Form/Form";
+import {selectChats} from "../../store/chats/selector";
+import {useDispatch, useSelector} from "react-redux";
+import {addChat, deleteChat} from "../../store/chats/actions";
+import {initMessageForChat, removeMessage} from "../../store/messages/actions";
+import shallowEqual from "react-redux/lib/utils/shallowEqual";
 
-const chat = [{
-    name: '1 chat',
-    id: "chat1"
-},
-    {
-        name: '2 chat',
-        id: "chat2",
-    },
-];
-export const ChatList = () => (
-    <>
-        <div className="App">
-            <div className="leftBar">
+export const ChatList = () => {
+    const dispatch = useDispatch();
+    const chats = useSelector(selectChats, shallowEqual);
 
-                {chat.map((cht) => (
-                    <Link to={`/chat/${cht.id}`} key={cht.id}>
-                        <div className="chat">
-                            {cht.name}
+    const handleSubmit = (newChatName) => {
+        const newChat = {
+            name: newChatName,
+            id: `chat-${Date.now()}`,
+        };
+        dispatch(addChat(newChat));
+        dispatch(initMessageForChat(newChat.id));
+    };
+    const handleRemoveChat = (id) => {
+        dispatch(deleteChat(id));
+        dispatch(removeMessage(id));
+    }
+
+    return (
+        <>
+            <div className="App">
+                <div className="leftBar">
+
+                    {chats.map((cht) => (
+                        <div key={cht.id}>
+                            <Link to={`/chat/${cht.id}`}>
+                                <div className="chat">
+                                    {cht.name}
+                                </div>
+                                <span onClick={() => handleRemoveChat(cht.id)}>Delete</span>
+                            </Link>
                         </div>
-                    </Link>
-                ))}
+                    ))}
+                </div>
+                <Form onSubmit={handleSubmit}/>
+                <Outlet/>
             </div>
-            <Outlet/>
-        </div>
-    </>
-);
+        </>
+    )
+};

@@ -1,21 +1,28 @@
 import {useDispatch, useSelector} from "react-redux";
-import {toggleCheckbox} from "../store/profile/actions";
+import {setName, toggleCheckbox} from "../store/profile/actions";
+import {Form} from "../components/Form/Form";
+import {selectName, selectShowName} from "../store/profile/selector";
 
 export const Profile = () => {
     const dispatch = useDispatch();
-    const state = useSelector(state => state);
+    const name = useSelector(selectName);
+    const showName = useSelector(selectShowName);
     const handleClick = () => {
         dispatch(toggleCheckbox);
+    };
+    const handleSubmit =(text) => {
+        dispatch(setName(text));
     }
     return (
         <>
             <h3>This is Profile</h3>
+
             <div>
                 <input type="checkbox" id="checkbox" onChange={handleClick}/>
                 <label htmlFor="checkbox">Show name : </label>
-                {state.showName && <span> {state.name}</span>}
+                {showName && <span> {name}</span>}
             </div>
-
+            <Form onSubmit={handleSubmit}/>
         </>
     )
 };
