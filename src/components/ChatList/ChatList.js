@@ -7,11 +7,12 @@ import {useDispatch, useSelector} from "react-redux";
 import {addChat, deleteChat} from "../../store/chats/actions";
 import {initMessageForChat, removeMessage} from "../../store/messages/actions";
 import shallowEqual from "react-redux/lib/utils/shallowEqual";
+import Button from "@mui/material/Button"
+import DeleteIcon from '@mui/icons-material/Delete';
 
 export const ChatList = () => {
     const dispatch = useDispatch();
     const chats = useSelector(selectChats, shallowEqual);
-
     const handleSubmit = (newChatName) => {
         const newChat = {
             name: newChatName,
@@ -35,13 +36,16 @@ export const ChatList = () => {
                             <Link to={`/chat/${cht.id}`}>
                                 <div className="chat">
                                     {cht.name}
+                                    <Button onClick={() => handleRemoveChat(cht.id)} endIcon={<DeleteIcon />}></Button>
                                 </div>
-                                <span onClick={() => handleRemoveChat(cht.id)}>Delete</span>
+
                             </Link>
                         </div>
                     ))}
+                    <Form onSubmit={handleSubmit} buttonName = "Создать чат"/>
+
                 </div>
-                <Form onSubmit={handleSubmit}/>
+
                 <Outlet/>
             </div>
         </>
